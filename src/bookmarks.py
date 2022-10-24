@@ -1,4 +1,4 @@
-from src.constants.http_status_codes import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT
+from src.constants.http_status_codes import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 from flask import Blueprint, jsonify, request
 from src.database import Bookmark, db
 from flask_jwt_extended import current_user, jwt_required, get_jwt_identity
@@ -8,7 +8,7 @@ bookmarks = Blueprint("bookmarks", __name__, url_prefix="/api/v1/bookmarks")
 
 @bookmarks.post('/')
 @jwt_required()
-def bookmarks_post():
+def post_bookmark():
     current_user = get_jwt_identity()
     body = request.get_json().get('body', '')
     url = request.get_json().get('url', '')
@@ -39,7 +39,7 @@ def bookmarks_post():
 
 @bookmarks.get('/')
 @jwt_required()
-def bookmarks_get():
+def get_bookmarks():
     current_user = get_jwt_identity()
     bookmarks = Bookmark.query.filter_by(user_id = current_user)
 
@@ -57,3 +57,25 @@ def bookmarks_get():
         })
     
     return jsonify({'data':data}),HTTP_200_OK
+
+@bookmarks.get('/<int:id>')
+@jwt_required()
+def get_bookmark(id):
+    current_user = get_jwt_identity()
+
+    bookmark = Bookmark.query.filter_by(user_id=current_user, id=id).first()
+
+    if not bookmark:
+        return jsonify({
+            'message':'Item not found'
+        }), HTTP_404_NOT_FOUND
+
+    return jsonify({
+        'ID':bookmark.id,
+        'url': bookmark.url,
+        'short_url': bookmark.short_url,
+        'visits': bookmark.visits,
+        'body': bookmark.body,
+        'created_at': bookmark.created_at,
+        'updated_at': bookmark.updated_at
+    }), HTTP_200_OK
