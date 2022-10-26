@@ -148,3 +148,27 @@ def delete_bookmark(id):
     return jsonify({
         'message': 'Item deleted'
     }), HTTP_204_NO_CONTENT
+
+@bookmarks.get('/stats')
+@jwt_required()
+def get_stats():
+    current_user = get_jwt_identity()
+
+    bookmarks = Bookmark.query.filter_by(user_id=current_user).all()
+
+    if not bookmark:
+        return jsonify({
+            'message':'Item not found'
+        }), HTTP_404_NOT_FOUND
+    
+    data = []
+
+    for item in bookmarks:
+        new_link={
+            'id': item.id,
+            'visits':item.visits,
+            'url': item.url,
+        }
+        data.append(new_link)
+
+    return jsonify({'data':data}), HTTP_200_OK
