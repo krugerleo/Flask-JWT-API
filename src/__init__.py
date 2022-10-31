@@ -45,6 +45,7 @@ def create_app(config=None):
 
 
     @app.get('/<short_url>')
+    @swag_from('')
     def redirect_url(short_url):
         bookmark = Bookmark.query.filter_by(short_url=short_url).first_or_404()
 

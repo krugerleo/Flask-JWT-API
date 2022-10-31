@@ -156,7 +156,7 @@ def get_stats():
 
     bookmarks = Bookmark.query.filter_by(user_id=current_user).all()
 
-    if not bookmark:
+    if not bookmarks:
         return jsonify({
             'message':'Item not found'
         }), HTTP_404_NOT_FOUND
