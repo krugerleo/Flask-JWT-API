@@ -5,20 +5,3 @@ project from: [Flask bookmarks API](https://www.youtube.com/playlist?list=PLx-q4
 
 
 ## Installation
-
-Use the package manager [npm](https://www.npmjs.com) to install.
-
-```bash
-npm install
-```
-
-## Usage
-
-```bash
-npm run backend
-```
-
-```bash
-npm run serve
-```
-
